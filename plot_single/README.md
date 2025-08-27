@@ -5,8 +5,13 @@ This Python script reads a CSV file and generates a time-based plot using config
 ---
 
 ## Usage
-
-python plot_single.py config.yaml
+```
+python3 plot_single.py config.yaml
+```
+show help/usage with
+```
+python3 plot_single.py --help
+```
 
 ## Features
 - Automatically extracts and cleans column headers
