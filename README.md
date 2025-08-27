@@ -9,3 +9,11 @@ Currently there are the following scripts planned:
 - mutlti subplots with single input file (2x1, 2x1 and 2x2 support)
 
 This repository will be a work in progress.
+
+# Requirements
+
+Install dependencies with:
+```
+pip install pandas matplotlib pyyaml
+```
+
