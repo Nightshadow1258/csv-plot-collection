@@ -16,4 +16,3 @@ Install dependencies with:
 ```
 pip install pandas matplotlib pyyaml
 ```
-

@@ -1,5 +1,14 @@
 # Path to the input CSV file
-input_file: input/input.csv
+# Option 1: Specify a single file
+# input_file: input/plot_single.csv
+
+# Option 2: Specify multiple files
+# input_files:
+#   - input/plot1.csv
+#   - input/plot2.csv
+
+# If neither is specified, all CSVs in the input/ folder will be processed
+# input_file: input/input.csv
 
 # Header cleanup rules (strings to remove from column names)
 header_cleanup:
@@ -7,7 +16,7 @@ header_cleanup:
   - "(C)"
 
 # Plot dimensions (width, height)
-plot_size: [10, 6]
+plot_size: [12, 7.5]
 
 # Font sizes for different elements
 font_sizes:
@@ -25,6 +34,9 @@ sampling_rate_ms: 100
 # Time window in seconds [start, end]
 # Leave empty or omit to plot full range
 time_window: []
+
+# Output directory (optional — defaults to "output/")
+# output_dir: output
 
 # Output formats to save the plot
 # Supports jpeg and pdf

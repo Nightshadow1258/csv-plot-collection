@@ -20,7 +20,6 @@ python3 plot_single.py --help
 - Gridlines and tight axis bounds
 - Customizable fonts and plot size
 - Saves to JPEG, PDF, or both
-- batch processing of all csv files in input folder (disables interactive preview of matplotlib - only if one file is processed)
 
 ## Output
 Plots are saved to the output/ directory using the input filename as the base.

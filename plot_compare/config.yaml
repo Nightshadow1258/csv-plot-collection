@@ -1,0 +1,45 @@
+# Input files to compare
+input_file_1: input/input.csv
+input_file_2: input/input2_offset.csv
+
+# ⏱Sampling rate in milliseconds
+sampling_interval_ms: 100
+
+# Time window to display [start_s, end_s]
+time_window: []
+
+# Time alignment
+# Options:
+#   aligh
+#   manual_offset_s: 5.0 → shift second file by 5 seconds
+alignment_method: rising_edge # "rising_edge" or "peak_detection" or "manual"
+
+auto_align_column_file1: 3      # Column from File 1 to use for auto-alignment.
+                                      # column index (integer).
+                                      # Defaults to column index 1 if not specified.
+
+auto_align_column_file2: 3      # Column from File 2 to use for auto-alignment.
+
+
+manual_offset_s: -6.2 # Ignored if auto_align is true
+
+# Plot dimensions
+plot_size: [12, 7.5]
+
+# Font sizes
+font_sizes:
+  title: 14
+  legend: 10
+  axis: 12
+
+# Columns to plot (indices, excluding time/sample column)
+columns_to_plot: []
+
+# 🧹 Header cleanup
+header_cleanup:
+  - "Ave. (C)"
+  - "(C)"
+
+# Output formats
+save_formats: ["jpeg", "pdf"]
+output_dir: output
