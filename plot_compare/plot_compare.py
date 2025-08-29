@@ -91,7 +91,7 @@ def estimate_offset(df1, df2, sampling_interval_s, selected_columns, config):
         return offset_s
     elif method == "peak_detection":
         return peak_alignment(signal1, signal2, sampling_interval_s)
-    else:  # default to cross_correlation
+    else:  # default to rising edge
         return rising_edge_alignment(signal1, signal2, sampling_interval_s)
 
 def rising_edge_alignment(signal1, signal2, sampling_interval_s, slope_threshold=0.1, window_size=200):
@@ -202,12 +202,15 @@ def main():
         plt.plot(time2_windowed, df2[col][start_idx2:end_idx2], label=f"{col} (File 2)", linestyle='--')
 
     fonts = config.get("font_sizes", {})
-    plt.xlabel("Time (s)", fontsize=fonts.get("axis", 12))
-    plt.ylabel("Value", fontsize=fonts.get("axis", 12))
-    plt.title("CSV Comparison Plot", fontsize=fonts.get("title", 14))
-    plt.legend(fontsize=fonts.get("legend", 10))
-    plt.grid(True, linestyle='--', linewidth=0.5)
+    plt.xlabel(config.get("axis_labels", {}).get("x", "Time [s]"), fontsize=fonts.get("axis", 14))
+    plt.ylabel(config.get("axis_labels", {}).get("y", "Value"), fontsize=fonts.get("axis", 14))
+    plt.title(config.get("plot_title", "CSV Plot"), fontsize=fonts.get("title", 16))
+    plt.legend(fontsize=fonts.get("legend", 12))
     plt.tight_layout()
+    plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.5)
+    plt.xticks(fontsize=fonts.get("ticks", 12))
+    plt.yticks(fontsize=fonts.get("ticks", 12))   
+
 
     output_dir = config.get("output_dir", "output")
     os.makedirs(output_dir, exist_ok=True)

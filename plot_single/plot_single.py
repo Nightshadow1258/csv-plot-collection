@@ -114,14 +114,15 @@ def main():
 
         # Fonts
         fonts = config.get("font_sizes", {})
-        plt.xlabel("Time (s)", fontsize=fonts.get("axis", 12))
-        plt.ylabel("Value", fontsize=fonts.get("axis", 12))
-        plt.title("CSV Plot", fontsize=fonts.get("title", 14))
-        plt.legend(fontsize=fonts.get("legend", 10))
+        plt.xlabel(config.get("axis_labels", {}).get("x", "Time [s]"), fontsize=fonts.get("axis", 14))
+        plt.ylabel(config.get("axis_labels", {}).get("y", "Value"), fontsize=fonts.get("axis", 14))
+        plt.title(config.get("plot_title", "CSV Plot"), fontsize=fonts.get("title", 16))
+        plt.legend(fontsize=fonts.get("legend", 12))
         plt.tight_layout()
         plt.xlim(time_windowed[0], time_windowed[-1])
         plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.5)
-
+        plt.xticks(fontsize=fonts.get("ticks", 12))
+        plt.yticks(fontsize=fonts.get("ticks", 12))         
         # Save outputs
         filename = os.path.splitext(os.path.basename(csv_file))[0]
         output_dir = config.get("output_dir", "output")
