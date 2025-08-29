@@ -120,7 +120,9 @@ def main():
         plt.legend(fontsize=fonts.get("legend", 12))
         plt.tight_layout()
         plt.xlim(time_windowed[0], time_windowed[-1])
-        plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.5)
+        plt.grid(True, which='major', axis='both', color="#00000000", linestyle=':', linewidth=0.8)
+        plt.grid(True, which='minor', axis='both', color="#A8A8A8C8", linestyle=':', linewidth=0.5)
+        plt.minorticks_on()
         plt.xticks(fontsize=fonts.get("ticks", 12))
         plt.yticks(fontsize=fonts.get("ticks", 12))         
         # Save outputs
