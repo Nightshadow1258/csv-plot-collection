@@ -118,6 +118,32 @@ def peak_alignment(signal1, signal2, sampling_interval_s, height=0.5):
     print(f"[Peak Detection] Estimated offset: {offset_s:.3f} seconds")
     return offset_s
 
+def apply_plot_formatting(config):
+    plot_format = config.get("plot_format", {})
+    fonts = plot_format.get("font_sizes", {})
+    
+    plt.xlabel(plot_format.get("axis_labels", {}).get("x", "X-AXIS NAME PLACEHOLDER"), fontsize=fonts.get("axis", 14))
+    plt.ylabel(plot_format.get("axis_labels", {}).get("y", "Y-AXIS NAME PLACEHOLDER"), fontsize=fonts.get("axis", 14))
+    plt.title(plot_format.get("plot_title", "TITLE"), fontsize=fonts.get("title", 16))
+    plt.legend(fontsize=fonts.get("legend", 12))
+
+    major = plot_format.get("grid", {}).get("major", {})
+    minor = plot_format.get("grid", {}).get("minor", {})
+    plt.grid(True, which='major', axis='both', 
+            color=major.get("color", "#00000000"),
+            linestyle=major.get("linestyle", ":"),
+            linewidth=major.get("linewidth", 0.8))
+    plt.grid(True, which='minor', axis='both', 
+        color=minor.get("color", "#00000000"),
+        linestyle=minor.get("linestyle", ":"),
+        linewidth=minor.get("linewidth", 0.8))
+    
+    plt.minorticks_on()
+    plt.xticks(fontsize=fonts.get("ticks", 12))
+    plt.yticks(fontsize=fonts.get("ticks", 12))
+
+    plt.tight_layout()
+
 
 def main():
     if len(sys.argv) != 2 or sys.argv[1] in ("--help", "-h"):
@@ -201,17 +227,8 @@ def main():
         plt.plot(time1_windowed, df1[col][start_idx1:end_idx1], label=f"{col} (File 1)")
         plt.plot(time2_windowed, df2[col][start_idx2:end_idx2], label=f"{col} (File 2)", linestyle='--')
 
-    fonts = config.get("font_sizes", {})
-    plt.xlabel(config.get("axis_labels", {}).get("x", "Time [s]"), fontsize=fonts.get("axis", 14))
-    plt.ylabel(config.get("axis_labels", {}).get("y", "Value"), fontsize=fonts.get("axis", 14))
-    plt.title(config.get("plot_title", "CSV Plot"), fontsize=fonts.get("title", 16))
-    plt.legend(fontsize=fonts.get("legend", 12))
-    plt.tight_layout()
-        plt.grid(True, which='major', axis='both', color="#00000000", linestyle=':', linewidth=0.8)
-        plt.grid(True, which='minor', axis='both', color="#A8A8A8C8", linestyle=':', linewidth=0.5)
-    plt.minorticks_on()
-    plt.xticks(fontsize=fonts.get("ticks", 12))
-    plt.yticks(fontsize=fonts.get("ticks", 12))   
+        # apply formatting
+        apply_plot_formatting(config)
 
 
     output_dir = config.get("output_dir", "output")

@@ -29,6 +29,33 @@ def get_input_files(config):
     else:
         return [os.path.join("input", f) for f in os.listdir("input") if f.endswith(".csv")]
 
+def apply_plot_formatting(config):
+    plot_format = config.get("plot_format", {})
+    fonts = plot_format.get("font_sizes", {})
+    
+    plt.xlabel(plot_format.get("axis_labels", {}).get("x", "X-AXIS NAME PLACEHOLDER"), fontsize=fonts.get("axis", 14))
+    plt.ylabel(plot_format.get("axis_labels", {}).get("y", "Y-AXIS NAME PLACEHOLDER"), fontsize=fonts.get("axis", 14))
+    plt.title(plot_format.get("plot_title", "TITLE"), fontsize=fonts.get("title", 16))
+    plt.legend(fontsize=fonts.get("legend", 12))
+
+    major = plot_format.get("grid", {}).get("major", {})
+    minor = plot_format.get("grid", {}).get("minor", {})
+    plt.grid(True, which='major', axis='both', 
+            color=major.get("color", "#00000000"),
+            linestyle=major.get("linestyle", ":"),
+            linewidth=major.get("linewidth", 0.8))
+    plt.grid(True, which='minor', axis='both', 
+        color=minor.get("color", "#00000000"),
+        linestyle=minor.get("linestyle", ":"),
+        linewidth=minor.get("linewidth", 0.8))
+    
+    plt.minorticks_on()
+    plt.xticks(fontsize=fonts.get("ticks", 12))
+    plt.yticks(fontsize=fonts.get("ticks", 12))
+
+    plt.tight_layout()
+
+
 
 def print_usage():
     print("""
@@ -112,16 +139,10 @@ def main():
         for col in selected_columns:
             plt.plot(time_windowed, df[col][start_idx:end_idx], label=col)
 
-        # Fonts
-        fonts = config.get("font_sizes", {})
-        plt.xlabel("Time (s)", fontsize=fonts.get("axis", 12))
-        plt.ylabel("Value", fontsize=fonts.get("axis", 12))
-        plt.title("CSV Plot", fontsize=fonts.get("title", 14))
-        plt.legend(fontsize=fonts.get("legend", 10))
-        plt.tight_layout()
+        # apply formatting
+        apply_plot_formatting(config)
         plt.xlim(time_windowed[0], time_windowed[-1])
-        plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.5)
-
+        
         # Save outputs
         filename = os.path.splitext(os.path.basename(csv_file))[0]
         output_dir = config.get("output_dir", "output")

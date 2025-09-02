@@ -29,6 +29,32 @@ def get_input_files(config):
     else:
         return [os.path.join("input", f) for f in os.listdir("input") if f.endswith(".csv")]
 
+def apply_plot_formatting(config):
+    plot_format = config.get("plot_format", {})
+    fonts = plot_format.get("font_sizes", {})
+    
+    plt.xlabel(plot_format.get("axis_labels", {}).get("x", "X-AXIS NAME PLACEHOLDER"), fontsize=fonts.get("axis", 14))
+    plt.ylabel(plot_format.get("axis_labels", {}).get("y", "Y-AXIS NAME PLACEHOLDER"), fontsize=fonts.get("axis", 14))
+    plt.title(plot_format.get("plot_title", "TITLE"), fontsize=fonts.get("title", 16))
+    plt.legend(fontsize=fonts.get("legend", 12))
+
+    major = plot_format.get("grid", {}).get("major", {})
+    minor = plot_format.get("grid", {}).get("minor", {})
+    plt.grid(True, which='major', axis='both', 
+            color=major.get("color", "#00000000"),
+            linestyle=major.get("linestyle", ":"),
+            linewidth=major.get("linewidth", 0.8))
+    plt.grid(True, which='minor', axis='both', 
+        color=minor.get("color", "#00000000"),
+        linestyle=minor.get("linestyle", ":"),
+        linewidth=minor.get("linewidth", 0.8))
+    
+    plt.minorticks_on()
+    plt.xticks(fontsize=fonts.get("ticks", 12))
+    plt.yticks(fontsize=fonts.get("ticks", 12))
+
+    plt.tight_layout()
+
 
 def print_usage():
     print("""
@@ -83,21 +109,18 @@ def main():
         cleanup_rules = config.get("header_cleanup", [])
         df.columns = clean_column_names(df.columns, cleanup_rules)
 
-        # Time axis
-        sampling_rate = ms_to_seconds(config.get("sampling_rate_ms", 100))
-        time = [i * sampling_rate for i in range(len(df))]
+        # Use the first column as X-axis
+        x = df.iloc[:, 0].values
 
-        # Time window
-        time_window = config.get("time_window", [])
-        if time_window:
-            start_s, end_s = time_window
-            start_idx = int(start_s / sampling_rate)
-            end_idx = int(end_s / sampling_rate)
+        # x window
+        x_window = config.get("x_window", [])
+        if x_window:
+            start_idx, end_idx = x_window
         else:
             start_idx = 0
-            end_idx = len(time)
+            end_idx = len(x)
 
-        time_windowed = time[start_idx:end_idx]
+        x_windowed = x[start_idx:end_idx]
 
         # Column selection
         all_columns = df.columns[1:]  # skip first column (sample number)
@@ -105,26 +128,15 @@ def main():
         if not selected_indices:
             selected_indices = list(range(len(all_columns)))
         selected_columns = [all_columns[i] for i in selected_indices]
-
         # Plot setup
-        plt.figure(figsize=tuple(config.get("plot_size", [10, 6])))
+        plt.figure(figsize=tuple(config.get("plot_size", [12, 7.5])))
 
         for col in selected_columns:
-            plt.plot(time_windowed, df[col][start_idx:end_idx], label=col)
+            plt.plot(x_windowed, df[col][start_idx:end_idx], label=col)
 
-        # Fonts
-        fonts = config.get("font_sizes", {})
-        plt.xlabel(config.get("axis_labels", {}).get("x", "Time [s]"), fontsize=fonts.get("axis", 14))
-        plt.ylabel(config.get("axis_labels", {}).get("y", "Value"), fontsize=fonts.get("axis", 14))
-        plt.title(config.get("plot_title", "CSV Plot"), fontsize=fonts.get("title", 16))
-        plt.legend(fontsize=fonts.get("legend", 12))
-        plt.tight_layout()
-        plt.xlim(time_windowed[0], time_windowed[-1])
-        plt.grid(True, which='major', axis='both', color="#00000000", linestyle=':', linewidth=0.8)
-        plt.grid(True, which='minor', axis='both', color="#A8A8A8C8", linestyle=':', linewidth=0.5)
-        plt.minorticks_on()
-        plt.xticks(fontsize=fonts.get("ticks", 12))
-        plt.yticks(fontsize=fonts.get("ticks", 12))         
+        # apply formatting
+        apply_plot_formatting(config)
+
         # Save outputs
         filename = os.path.splitext(os.path.basename(csv_file))[0]
         output_dir = config.get("output_dir", "output")

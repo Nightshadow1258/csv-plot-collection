@@ -2,11 +2,15 @@
 input_file_1: input/input.csv
 input_file_2: input/input2_offset.csv
 
-# ⏱Sampling rate in milliseconds
-sampling_interval_ms: 100
 
-# Time window to display [start_s, end_s]
-time_window: []
+
+# Header cleanup
+header_cleanup:
+  - "Ave. (C)"
+  - "(C)"
+
+
+
 
 # Time alignment
 # Options:
@@ -23,28 +27,40 @@ auto_align_column_file2: 3      # Column from File 2 to use for auto-alignment.
 
 manual_offset_s: -6.2 # Ignored if auto_align is true
 
-# Plot dimensions
-plot_size: [12, 7.5]
-plot_title: "Title of the Plot"
-axis_labels:
-  x: "Time [s]"
-  y: "Temperature [°C]"
-
-# Font sizes for different elements
-font_sizes:
-  title: 16      # Title font size
-  legend: 12     # Legend font size
-  axis: 14       # Axis labels font size
-  ticks: 12      # Tick labels font size
-
 # Columns to plot (indices, excluding time/sample column)
 columns_to_plot: []
 
-# 🧹 Header cleanup
-header_cleanup:
-  - "Ave. (C)"
-  - "(C)"
+
+# Sampling rate in milliseconds
+sampling_interval_ms: 100
+
+# Plot formatting options (default settings)
+plot_format:
+  size:
+    width: 12
+    height: 7.5
+  font_sizes:
+    axis: 14
+    title: 16
+    legend: 12
+    ticks: 12
+  grid:
+    major:
+      color: "#00000000"
+      linestyle: ":"
+      linewidth: 0.8
+    minor:
+      color: "#A8A8A8C8"
+      linestyle: ":"
+      linewidth: 0.5
+  axis_labels:
+    x: "Time [s]"
+    y: "Temperature [°C]"
+  plot_title: "Title of the Plot"
+
+# Time window to display [start_s, end_s]
+time_window: []
 
 # Output formats
-save_formats: ["jpeg", "pdf"]
+save_formats: ["jpeg"]
 output_dir: output

@@ -1,0 +1,68 @@
+# Path to the input CSV file
+# Option 1: Specify a single file
+#input_file: input/12V_T30_GDU_motor_dis_AutoZero_en.csv
+
+# Option 2: Specify multiple files
+# input_files:
+#   - input/plot1.csv
+#   - input/plot2.csv
+
+# If neither is specified, all CSVs in the input/ folder will be processed
+
+# Header cleanup rules (strings to remove from column names)
+header_cleanup:
+  - "Ave. (C)"
+  - "(C)"  
+
+
+# Font sizes for different elements
+font_sizes:
+  title: 14      # Title font size
+  legend: 14     # Legend font size
+  axis: 14       # Axis labels font size
+
+# Indices of columns to plot (excluding time column) = [1, 3, 5] would plot the 2nd, 4th, and 6th columns
+# Leave empty or omit to plot all available columns = []
+columns_to_plot: [1,2]
+
+# Sampling rate in milliseconds
+sampling_rate_ms: 100
+
+# single (all columns in one plot - good to compare 2 columns) 
+# or multi (each columns gets its own subplot - good for many columns)
+plot_mode: "single" 
+
+
+# Plot formatting options (default settings)
+plot_format:
+  size:
+    width: 15
+    height: 10
+  font_sizes:
+    axis: 14
+    title: 12
+    legend: 12
+    ticks: 12
+  grid:
+    major:
+      color: "#00000000"
+      linestyle: ":"
+      linewidth: 0.8
+    minor:
+      color: "#A8A8A8C8"
+      linestyle: ":"
+      linewidth: 0.5
+  axis_labels:
+    x: "Integer Value [LSB]"
+    y: "Frequency [#]"
+  plot_title: "Histogram"
+
+# Output directory (optional — defaults to "output/")
+# output_dir: output
+
+# Output formats to save the plot
+# Supports jpeg and pdf
+# Specify one or multiple formats like this: ["jpeg"] or ["jpeg", "pdf"]
+# If the plot shall not be safed, use an empty list: []
+save_formats: ["jpeg"]
+
