@@ -221,7 +221,9 @@ def main():
         selected_indices = list(range(len(columns)))
     selected_columns = [columns[i] for i in selected_indices]
 
-    plt.figure(figsize=tuple(config.get("plot_size", [10, 6])))
+    plot_format = config.get("plot_format", {})
+    plot_format_size = plot_format.get("size")
+    plt.figure(figsize=[plot_format_size.get("width",12), plot_format_size.get("height",7.5)])
 
     for col in selected_columns:
         plt.plot(time1_windowed, df1[col][start_idx1:end_idx1], label=f"{col} (File 1)")

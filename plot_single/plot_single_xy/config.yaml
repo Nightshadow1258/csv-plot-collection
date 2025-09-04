@@ -1,6 +1,6 @@
 # Path to the input CSV file
 # Option 1: Specify a single file
-# input_file: input/plot_single.csv
+input_file: input/NRF52_V1.0_Cl_12pF_L_nmod.csv
 
 # Option 2: Specify multiple files
 # input_files:

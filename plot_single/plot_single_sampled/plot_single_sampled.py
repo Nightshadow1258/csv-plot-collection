@@ -134,7 +134,9 @@ def main():
         selected_columns = [all_columns[i] for i in selected_indices]
 
         # Plot setup
-        plt.figure(figsize=tuple(config.get("plot_size", [10, 6])))
+        plot_format = config.get("plot_format", {})
+        plot_format_size = plot_format.get("size")
+        plt.figure(figsize=[plot_format_size.get("width",12), plot_format_size.get("height",7.5)])
 
         for col in selected_columns:
             plt.plot(time_windowed, df[col][start_idx:end_idx], label=col)

@@ -14,13 +14,6 @@ header_cleanup:
   - "Ave. (C)"
   - "(C)"  
 
-
-# Font sizes for different elements
-font_sizes:
-  title: 14      # Title font size
-  legend: 14     # Legend font size
-  axis: 14       # Axis labels font size
-
 # Indices of columns to plot (excluding time column) = [1, 3, 5] would plot the 2nd, 4th, and 6th columns
 # Leave empty or omit to plot all available columns = []
 columns_to_plot: [1,2]

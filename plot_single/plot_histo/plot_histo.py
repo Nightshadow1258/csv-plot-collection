@@ -130,6 +130,7 @@ def main():
         cleanup_rules = config.get("header_cleanup", [])
         df.columns = clean_column_names(df.columns, cleanup_rules)
 
+        # data preprocessing
         # conversion from hex to int
         df_int = df.map(lambda x: int(x, 16))
 
@@ -142,7 +143,9 @@ def main():
         output_dir = config.get("output_dir", "output")
 
         # Single Histogramm
-        plt.figure(figsize=tuple(config.get("plot_size", [12, 7.5])))
+        plot_format = config.get("plot_format", {})
+        plot_format_size = plot_format.get("size")
+        plt.figure(figsize=[plot_format_size.get("width",12), plot_format_size.get("height",7.5)])
         for i, column in enumerate(df_int.columns):
             plt.hist(df_int[column], bins=30, alpha=0.6, label=column, edgecolor="black")
 
@@ -157,7 +160,8 @@ def main():
             plt.close()
 
         # Separated Hsitogram
-        fig, axes = plt.subplots(2, 3, figsize=tuple(config.get("plot_size", [12, 7.5])))
+
+        fig, axes = plt.subplots(2, 3, figsize=[plot_format_size.get("width",12), plot_format_size.get("height",7.5)])
         axes = axes.flatten()
         plot_format = config.get("plot_format", {})
         fonts = plot_format.get("font_sizes", {})
