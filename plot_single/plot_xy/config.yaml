@@ -1,6 +1,6 @@
 # Path to the input CSV file
 # Option 1: Specify a single file
-input_file: input/NRF52_V1.0_Cl_12pF_L_nmod.csv
+input_file: input/NRF52_V1.0_Cl_12pF_L_mod.csv
 
 # Option 2: Specify multiple files
 # input_files:
@@ -39,19 +39,24 @@ plot_format:
       linestyle: ":"
       linewidth: 0.5
   axis_labels:
-    x: "Time [s]"
-    y: "Temperature [°C]"
-  plot_title: "Title of the Plot"
+    x: "Frequency [Hz]"
+    y: "Amplitude [dBm]"
+  plot_title: "Amplitude vs Frequency"
 
 # window for x axis [start, end]
 # Leave empty or omit to plot full range
-x_window: []
+x_window: [248,338]
 
 # Output directory (optional — defaults to "output/")
 # output_dir: output
 
-# Output formats to save the plot
-# Supports jpeg and pdf
-# Specify one or multiple formats like this: ["jpeg"] or ["jpeg", "pdf"]
-# If the plot shall not be safed, use an empty list: []
-save_formats: ["jpeg"]
+# save_formats: 
+# image formats to save, supported formats include: "jpeg", "png", "pdf", "svg"
+# data formats to save, supported formats include: "csv", "xlsx"
+save_formats:
+  image:
+    - "jpeg"
+    - "pdf"
+  data:
+    - "csv"
+    - "xlsx"

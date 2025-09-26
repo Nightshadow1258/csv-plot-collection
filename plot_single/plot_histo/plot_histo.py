@@ -4,6 +4,40 @@ import yaml
 import os
 import sys
 
+ 
+def print_usage():
+    print("""
+Usage:
+    python plot_single.py <config.yaml>
+
+Description:
+    This script reads one or more CSV files and plots selected columns based on settings in a YAML config file.
+
+Input File Options (choose one):
+    input_file:           Path to a single CSV file (e.g., input/data.csv)
+    input_files:          List of multiple CSV files to process (e.g., ["input/data1.csv", "input/data2.csv"])
+                          If neither is specified, all CSV files in the 'input/' folder will be processed automatically.
+
+Available Configuration Options in config.yaml:
+    plot_size:            Plot dimensions in inches [width, height] (e.g., [10, 6])
+    font_sizes:
+        title:            Font size for the plot title
+        legend:           Font size for the legend
+        axis:             Font size for axis labels
+    columns_to_plot:      List of column indices to plot (excluding time/sample column).
+                          Use [] or omit to plot all available columns.
+    sampling_rate_ms:     Sampling interval in milliseconds (e.g., 100)
+    time_window:          Time range to display [start_s, end_s] in seconds.
+                          Leave empty or omit to plot full range.
+    header_cleanup:       List of substrings to remove from column headers (e.g., ["Ave. (C)", "(C)"])
+    save_formats:         Output formats to save the plot (e.g., ["jpeg", "pdf"] or [] to skip saving)
+    output_dir:           Optional. Directory to save output files. Defaults to "output/"
+    show_plot:            plot will be displayed interactively if only one file is processed.
+
+Example:
+    python plot_single.py config.yaml
+""")
+    
 def load_config(config_path):
     with open(config_path, 'r') as f:
         return yaml.safe_load(f)
@@ -74,42 +108,44 @@ def apply_subplot_formatting(ax, config):
 
     ax.minorticks_on()
     ax.tick_params(axis='both', labelsize=fonts.get("ticks", 12))
+    
+def save_formats(plt, df, csv_file, config, output_tag=""):
+    """
+    Saves plot and cleaned data in multiple formats as specified in the config.
 
+    Parameters:
+    - plt (matplotlib.pyplot): The plotting context containing the figure to be saved.
+    - df (pandas.DataFrame): The cleaned DataFrame to be exported.
+    - csv_file (str): Path to the original CSV file, used to derive the output filename.
+    - config (dict): Configuration dictionary containing:
+        - 'output_dir' (str): Directory where outputs will be saved. Defaults to 'output'.
+        - 'save_formats' (dict): Specifies formats to save:
+            - 'image' (list[str]): List of image formats (e.g., ['jpeg', 'pdf']) for plot export.
+            - 'data' (list[str]): List of data formats (e.g., ['csv', 'xlsx']) for DataFrame export.
 
+    Behavior:
+    - Creates the output directory if it doesn't exist.
+    - Saves the plot in each specified image format using `plt.savefig`.
+    - Saves the DataFrame in each specified data format using `df.to_csv` or `df.to_excel`.
 
-def print_usage():
-    print("""
-Usage:
-    python plot_single.py <config.yaml>
+    Example config:
+    save_formats:
+      image: ["jpeg", "pdf"]
+      data: ["csv", "xlsx"]
+    """
 
-Description:
-    This script reads one or more CSV files and plots selected columns based on settings in a YAML config file.
+    filename = os.path.splitext(os.path.basename(csv_file))[0]
+    output_dir = config.get("output_dir", "output")
+    os.makedirs(output_dir, exist_ok=True)
+    save_formats = config.get("save_formats", [])
+    for fmt_img in save_formats.get("image", []) or []:
+        plt.savefig(f"{output_dir}/{filename}{output_tag}.{fmt_img}", format=fmt_img)
 
-Input File Options (choose one):
-    input_file:           Path to a single CSV file (e.g., input/data.csv)
-    input_files:          List of multiple CSV files to process (e.g., ["input/data1.csv", "input/data2.csv"])
-                          If neither is specified, all CSV files in the 'input/' folder will be processed automatically.
-
-Available Configuration Options in config.yaml:
-    plot_size:            Plot dimensions in inches [width, height] (e.g., [10, 6])
-    font_sizes:
-        title:            Font size for the plot title
-        legend:           Font size for the legend
-        axis:             Font size for axis labels
-    columns_to_plot:      List of column indices to plot (excluding time/sample column).
-                          Use [] or omit to plot all available columns.
-    sampling_rate_ms:     Sampling interval in milliseconds (e.g., 100)
-    time_window:          Time range to display [start_s, end_s] in seconds.
-                          Leave empty or omit to plot full range.
-    header_cleanup:       List of substrings to remove from column headers (e.g., ["Ave. (C)", "(C)"])
-    save_formats:         Output formats to save the plot (e.g., ["jpeg", "pdf"] or [] to skip saving)
-    output_dir:           Optional. Directory to save output files. Defaults to "output/"
-    show_plot:            plot will be displayed interactively if only one file is processed.
-
-Example:
-    python plot_single.py config.yaml
-""")
-
+    for fmt_data in save_formats.get("data", []) or []:
+        if fmt_data == "csv":
+            df.to_csv(f"{output_dir}/{filename}{output_tag}_cleaned.csv", index=False)
+        elif fmt_data == "xlsx":
+            df.to_excel(f"{output_dir}/{filename}{output_tag}_cleaned.xlsx", index=False)  
 
 def main():
     if len(sys.argv) != 2 or sys.argv[1] in ("--help", "-h"):
@@ -151,8 +187,7 @@ def main():
 
         apply_plot_formatting(config)
 
-        for fmt in config.get("save_formats", []):
-            plt.savefig(f"{output_dir}/{filename}_all.{fmt}", format=fmt)
+        save_formats(plt, df, csv_file, config, "_all")
 
         if not batch_mode:
             plt.show()
@@ -196,8 +231,7 @@ def main():
 
         os.makedirs(output_dir, exist_ok=True)
 
-        for fmt in config.get("save_formats", []):
-            plt.savefig(f"{output_dir}/{filename}_separate.{fmt}", format=fmt)
+        save_formats(plt, df, csv_file, config)
 
         if not batch_mode:
             plt.show()

@@ -53,9 +53,14 @@ plot_format:
 # Output directory (optional — defaults to "output/")
 # output_dir: output
 
-# Output formats to save the plot
-# Supports jpeg and pdf
-# Specify one or multiple formats like this: ["jpeg"] or ["jpeg", "pdf"]
-# If the plot shall not be safed, use an empty list: []
-save_formats: ["jpeg"]
+# save_formats: 
+# image formats to save, supported formats include: "jpeg", "png", "pdf", "svg"
+# data formats to save, supported formats include: "csv", "xlsx"
+save_formats:
+  image:
+    - "jpeg"
+    - "pdf"
+  data:
+    # - "csv"
+    # - "xlsx"
 
